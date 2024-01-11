@@ -1,22 +1,33 @@
 const {Character} = require('./character');
 
-
 class Enemy extends Character {
   constructor(name, description, currentRoom) {
     // Fill this in
+    super(name, description, currentRoom);
+    this.cooldown = 3000;
+    this.attackTarget = null;
   }
 
   setPlayer(player) {
     this.player = player;
   }
 
-
   randomMove() {
     // Fill this in
+    const exits = this.currentRoom.getExits();
+    const random = Math.floor(Math.random() * exits.length);
+    this.currentRoom = this.currentRoom.getRoomInDirection(exits[random]);
+    this.cooldown = 3000;
   }
 
   takeSandwich() {
     // Fill this in
+    const sandwich = this.currentRoom.getItemByName('sandwich');
+    if (sandwich) {
+      const index = this.currentRoom.items.indexOf(sandwich);
+      this.currentRoom.items.splice(index, 1);
+      this.items.push(sandwich);
+    }
   }
 
   // Print the alert only if player is standing in the same room
@@ -28,6 +39,7 @@ class Enemy extends Character {
 
   rest() {
     // Wait until cooldown expires, then act
+    console.log('rest');
     const resetCooldown = function() {
       this.cooldown = 0;
       this.act();
@@ -37,36 +49,32 @@ class Enemy extends Character {
 
   attack() {
     // Fill this in
+    console.log('attack');
+    this.attackTarget.applyDamage(this.strength);
+    this.cooldown = 3000;
   }
-
-  applyDamage(amount) {
-    // Fill this in
-  }
-
-
 
   act() {
     if (this.health <= 0) {
       // Dead, do nothing;
-    } else if (this.cooldown > 0) {
-      this.rest();
     } else {
-      this.scratchNose();
-      this.rest();
+      if (this.cooldown > 0) {
+        this.rest();
+      }
+      else if (this.attackTarget !== null) {
+        this.attack();
+      } else {
+        this.scratchNose();
+        this.rest();
+      }
     }
-
-    // Fill this in
   }
-
 
   scratchNose() {
+    console.log('scratch nose');
     this.cooldown += 1000;
-
     this.alert(`${this.name} scratches its nose`);
-
   }
-
-
 }
 
 module.exports = {
