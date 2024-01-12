@@ -20,6 +20,9 @@ class Character {
 
   die() {
     // Fill this in
+    setTimeout(() => {
+      console.log(`${this.name} is dead!`);
+    }, 500);
     this.currentRoom.items.push(...this.items);
     this.items = [];
     this.currentRoom = null;

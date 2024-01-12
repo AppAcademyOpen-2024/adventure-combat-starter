@@ -6,6 +6,7 @@ class Enemy extends Character {
     super(name, description, currentRoom);
     this.cooldown = 3000;
     this.attackTarget = null;
+    this.health = 50;
   }
 
   setPlayer(player) {
@@ -39,8 +40,7 @@ class Enemy extends Character {
 
   rest() {
     // Wait until cooldown expires, then act
-    console.log('rest');
-    const resetCooldown = function() {
+    const resetCooldown = () => {
       this.cooldown = 0;
       this.act();
     };
@@ -49,30 +49,27 @@ class Enemy extends Character {
 
   attack() {
     // Fill this in
-    console.log('attack');
     this.attackTarget.applyDamage(this.strength);
+    console.log(`${this.name} attacked you! Your health is ${this.attackTarget.health}`);
     this.cooldown = 3000;
   }
 
   act() {
     if (this.health <= 0) {
       // Dead, do nothing;
-    } else {
-      if (this.cooldown > 0) {
-        this.rest();
-      }
-      else if (this.attackTarget !== null) {
-        this.attack();
-      } else {
-        this.scratchNose();
-        this.rest();
-      }
+    } else if (this.cooldown > 0) {
+      this.rest();
     }
+    else if (this.attackTarget !== null && this.attackTarget.currentRoom === this.currentRoom) {
+      this.attack();
+    } else {
+      this.scratchNose();
+    }
+    this.rest();
   }
 
   scratchNose() {
-    console.log('scratch nose');
-    this.cooldown += 1000;
+    this.cooldown += 3000;
     this.alert(`${this.name} scratches its nose`);
   }
 }

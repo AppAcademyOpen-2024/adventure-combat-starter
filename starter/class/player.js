@@ -38,6 +38,7 @@ class Player extends Character {
     const item = this.currentRoom.getItemByName(itemName);
     this.currentRoom.items = this.currentRoom.items.filter((i) => i.name !== itemName);
     this.items.push(item);
+    console.log(`You picked up the ${itemName}`);
   }
 
   dropItem(itemName) {
@@ -45,6 +46,7 @@ class Player extends Character {
     const item = this.getItemByName(itemName);
     this.items = this.items.filter((i) => i.name !== itemName);
     this.currentRoom.items.push(item);
+    console.log(`You dropped the ${itemName}`);
   }
 
   eatItem(itemName) {
@@ -52,7 +54,9 @@ class Player extends Character {
     const item = this.getItemByName(itemName);
     if (item instanceof Food) {
       // Add health?
+      this.health += 50;
       this.items = this.items.filter((i) => i.name !== itemName);
+      console.log(`You ate the ${itemName} and restored 50 health`);
     }
   }
 
@@ -64,10 +68,9 @@ class Player extends Character {
   hit(name) {
     // Fill this in
     const enemy = this.currentRoom.getEnemyByName(name);
-    console.log('enemy:', enemy);
     if (enemy) {
-      console.log('yes enemy');
       enemy.applyDamage(this.strength);
+      console.log(`Attacked the ${enemy.name}! Enemy health is ${enemy.health}`);
       enemy.attackTarget = this;
     }
   }
